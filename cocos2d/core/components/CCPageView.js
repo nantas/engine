@@ -85,6 +85,21 @@ var PageView = cc.Class({
     },
 
     properties: {
+
+        /**
+         * !#en The single page size
+         * !#zh 单个页面
+         * @property {cc.size} pageSize
+         */
+        pageSize: {
+            default: cc.size(0, 0),
+            //tooltip: 'i18n:COMPONENT.pageview.pageSize',
+            notify: function() {
+                //this._updateAllPagesSize();
+            }
+        },
+
+
         /**
          * !#en The page view direction
          * !#zh 页面视图滚动类型
@@ -161,7 +176,7 @@ var PageView = cc.Class({
 
     __preload: function () {
         this._super();
-        this.node.on('size-changed', this._updateAllPagesSize, this);
+        //this.node.on('size-changed', this._updateAllPagesSize, this);
         this._syncScrollDirection();
     },
 
@@ -193,7 +208,7 @@ var PageView = cc.Class({
 
     onDestroy: function() {
         this._super();
-        this.node.off('size-changed', this._updateAllPagesSize, this);
+        //this.node.off('size-changed', this._updateAllPagesSize, this);
     },
 
     /**
@@ -355,7 +370,7 @@ var PageView = cc.Class({
     // 刷新所有页面的大小
     _updateAllPagesSize: function () {
         var locPages = CC_EDITOR ? this.content.children : this._pages;
-        var selfSize = this.node.getContentSize();
+        var selfSize = this.pageSize;
         for (var i = 0, len = locPages.length; i < len; i++) {
             locPages[i].setContentSize(selfSize);
         }
@@ -382,10 +397,10 @@ var PageView = cc.Class({
     // 是否超过自动滚动临界值
     _isScrollable: function (offset) {
         if (this.direction === Direction.Horizontal) {
-            return Math.abs(offset.x) >= this.node.width * this.scrollThreshold;
+            return Math.abs(offset.x) >= this.pageSize.width * this.scrollThreshold;
         }
         else if (this.direction === Direction.Vertical) {
-            return Math.abs(offset.y) >= this.node.height * this.scrollThreshold;
+            return Math.abs(offset.y) >= this.pageSize.height * this.scrollThreshold;
         }
     },
 
@@ -393,10 +408,10 @@ var PageView = cc.Class({
     _moveOffsetValue: function (idx) {
         var offset = cc.p(0, 0);
         if (this.direction === Direction.Horizontal) {
-            offset.x = idx * this.node.width;
+            offset.x = idx * this.pageSize.width;
         }
         else if (this.direction === Direction.Vertical) {
-            offset.y = idx * this.node.height;
+            offset.y = idx * this.pageSize.height;
         }
         return offset;
     },
